@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Categories;
 use App\Entity\Liste;
+use App\Form\DeleteIdeaType;
 use App\Form\ListeType;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,20 +23,52 @@ class IdeaController extends AbstractController
     /**
      * @Route("/", name="_list")
      * @param Request $request
+     * @param PaginatorInterface $paginator
      * @return Response
      */
-    public function list_idea(Request $request)
+    public function list_idea(Request $request, PaginatorInterface $paginator)
     {
         $ListRepo = $this->getDoctrine()->getRepository(Liste::class);
         $categories = $this->getDoctrine()->getRepository(Categories::class)->findAll();
         if ($request->request->get('categorie') == null || $request->request->get('categorie') == -1) {
-            $liste = $ListRepo->findBy(['isPublished' => 'TRUE'], ['dateCreated' => 'DESC'], 30);
+            $liste = $ListRepo->findBy(['isPublished' => 'TRUE'], ['dateCreated' => 'DESC']);
             $select = -1;
         } else {
             $select = $request->request->get('categorie');
-            $liste = $ListRepo->findBy(['isPublished' => 'TRUE', 'categorie' => $select]);
+            $liste = $ListRepo->findBy(['isPublished' => 'TRUE', 'categorie' => $select], ['dateCreated' => 'DESC']);
         }
-        return $this->render('idea/list.html.twig', ['liste' => $liste, 'categories' => $categories, 'select' => $select]);
+        $res = $paginator->paginate(
+            $liste,
+            $request->query->getInt('page', 1),
+            6
+        );
+        return $this->render('idea/list.html.twig', ['liste' => $res, 'categories' => $categories, 'select' => $select]);
+    }
+
+    /**
+     * @Route("/delete/{id}", name="_delete")
+     * @param $id
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return RedirectResponse|Response
+     */
+    public function delete_idea($id, Request $request, EntityManagerInterface $em)
+    {
+        $ListRepo = $this->getDoctrine()->getRepository(Liste::class);
+        $res = $ListRepo->find(["id" => $id]);
+        $formDelete = $this->createForm(DeleteIdeaType::class, $res);
+        $formDelete->handleRequest($request);
+        if ($formDelete->isSubmitted() && $formDelete->isValid()) {
+            $em->remove($res);
+            $em->flush();
+            $this->addFlash('success', 'Idea suppressed successfully !');
+            return $this->redirectToRoute('home');
+        }
+        if ($this->getUser() == null || (strcmp($this->getUser()->getUsername(), $res->getAuthor()) !== 0)) {
+            $this->addFlash('danger', 'You can\'t delete someone\'s else idea !');
+            return $this->redirectToRoute('idea_list');
+        }
+        return $this->render('idea/delete.html.twig', ["listeForm" => $formDelete->createView()]);
     }
 
     /**
@@ -48,11 +83,11 @@ class IdeaController extends AbstractController
         if ($formListe->isSubmitted() && $formListe->isValid()) {
             $em->persist($res);
             $em->flush();
-            $this->addFlash('success', 'L\'idée a bien été ajoutée à la liste !');
+            $this->addFlash('success', 'The idea was successfully added to the list !');
             return $this->redirectToRoute('idea_detail', ['id' => $res->getId()]);
         }
         if ($this->getUser() == null || (strcmp($this->getUser()->getUsername(), $res->getAuthor()) !== 0)) {
-            $this->addFlash('error', 'You can\'t edit someone\'s else idea !');
+            $this->addFlash('danger', 'You can\'t edit someone\'s else idea !');
             return $this->redirectToRoute('idea_list');
         } else {
             return $this->render('idea/edit.html.twig', ["listeForm" => $formListe->createView()]);
@@ -91,10 +126,10 @@ class IdeaController extends AbstractController
         if ($formListe->isSubmitted() && $formListe->isValid()) {
             $em->persist($liste);
             $em->flush();
-            $this->addFlash('success', 'L\'idée a bien été ajoutée à la liste !');
+            $this->addFlash('success', 'The idea was modified successfully !');
             return $this->redirectToRoute('idea_detail', ['id' => $liste->getId()]);
         } elseif ($formListe->isSubmitted() && !$formListe->isValid())
-            $this->addFlash('error', 'L\'idée n\'as pas été ajouté à la liste car un ou plusieurs champs sont incorrect');
+            $this->addFlash('danger', 'The idea wasn\'t modified because on or multiple champs are incorrect !');
 
         return $this->render('idea/add.html.twig', [
             "listeForm" => $formListe->createView()

@@ -1,0 +1,18 @@
+{% extends 'layout.html.twig' %}
+
+{% block main %}
+    <div id="form">
+        {{ form_start(listeForm) }}
+        <fieldset>
+            <legend>Supprimer une idée</legend>
+            <h2>Êtes-vous sûr de vouloir supprimer cette idée ?</h2>
+            {{ form_rest(listeForm) }}
+            <input type="submit" class="btn btn-danger" name="valider" value="Valider"/>
+        </fieldset>
+        {{ form_end(listeForm) }}
+    </div>
+{% endblock %}
+
+{% block title %}
+    Supprimer une idée !
+{% endblock %}

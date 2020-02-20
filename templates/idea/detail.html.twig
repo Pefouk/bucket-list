@@ -5,14 +5,19 @@
     <h3>by {{ res.author }}</h3>
     <h3>Categorie : {{ res.categorie.nom }}</h3>
     {% if res.description != false %}
-    <p>{{ res.description }}</p>
+        <p>{{ res.description }}</p>
     {% endif %}
     <h4>{{ res.dateCreated|date("d/m/Y") }}</h4>
     {% if editable != 0 %}
-        <a href="{{ path('idea_edit', {id: res.id}) }}">Editer</a>
+        <a href="{{ path('idea_edit', {id: res.id}) }}">
+            <button class="btn btn-primary">Editer</button>
+        </a>
+        <a href="{{ path('idea_delete', {id: res.id}) }}">
+            <button class="btn btn-danger">Supprimer</button>
+        </a>
     {% endif %}
 {% endblock %}
 
 {% block title %}
-    Ma bucket-list !
+    {{ res.title }}
 {% endblock %}

@@ -20,6 +20,9 @@
             </select>
         </label>
         <button type="submit" class="btn btn-primary" name="valider">Valider</button>
+        <div class="navigation">
+            {{ knp_pagination_render(liste) }}
+        </div>
     </form>
     <ul>
         {% for bucket in liste %}
