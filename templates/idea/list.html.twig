@@ -1,0 +1,34 @@
+{% extends 'layout.html.twig' %}
+
+{% block main %}
+    <form action="{{ path('idea_list') }}" method="post">
+        <label> Categorie
+            <select name="categorie">
+                <option value="-1"
+                        {% if select == -1 %}
+                            selected
+                        {% endif %}
+                >Toutes
+                </option>
+                {% for categorie in categories %}
+                    <option value="{{ categorie.id }}"
+                            {% if select == categorie.id %}
+                                selected
+                            {% endif %}
+                    >{{ categorie.nom }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit" class="btn btn-primary" name="valider">Valider</button>
+    </form>
+    <ul>
+        {% for bucket in liste %}
+            <li><a href="{{ path('idea_detail', {id: bucket.id}) }}">{{ bucket.title }} : {{ bucket.categorie.nom }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block title %}
+    Ma bucket-list !
+{% endblock %}

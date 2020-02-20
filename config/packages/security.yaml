@@ -1,0 +1,30 @@
+security:
+  providers:
+    our_db_provider:
+      entity:
+        class: App\Entity\User
+        property: username
+
+  firewalls:
+    main:
+      pattern: ^/
+      provider: our_db_provider
+      anonymous: ~
+      form_login:
+        username_parameter: "username"
+        password_parameter: "password"
+        login_path: /user/login
+        check_path: /user/login
+      logout:
+        path: /user/logout
+        target: home
+      guard:
+        authenticators:
+          - App\Security\LoginFormAuthAuthenticator
+      remember_me:
+        secret:   '%kernel.secret%'
+        lifetime: 604800
+        path:     /
+  encoders:
+    App\Entity\User:
+      algorithm: bcrypt

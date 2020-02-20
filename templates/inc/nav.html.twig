@@ -1,0 +1,14 @@
+<div class="nav">
+    <a href="{{ path('home') }}"><h2>Accueil</h2></a>
+    <a href="{{ path('idea_list') }}"><h2>Liste d'idées</h2></a>
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        <a href="{{ path('idea_add') }}"><h2>Ajouter une idée</h2></a>
+        <a href="{{ path('user_logout') }}"><h2>Disconnect</h2></a>
+    {% else %}
+        <a href="{{ path('user_login') }}"><h2>Connexion</h2></a>
+    {% endif %}
+    <a href="{{ path('aboutus') }}"><h2>About us</h2></a>
+</div>
+{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+    <h2>Hello {{ app.user.username }} !</h2>
+{% endif %}

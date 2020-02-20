@@ -1,0 +1,17 @@
+{% extends 'layout.html.twig' %}
+
+{% block main %}
+    <div id="form">
+        {{ form_start(userForm) }}
+        <fieldset>
+            <legend>Inscription</legend>
+            {{ form_widget(userForm) }}
+            <input type="submit" name="valider" value="Valider"/>
+        </fieldset>
+        {{ form_end(userForm) }}
+    </div>
+{% endblock %}
+
+{% block title %}
+    S'inscrire !
+{% endblock %}

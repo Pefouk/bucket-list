@@ -1,0 +1,17 @@
+{% extends 'layout.html.twig' %}
+
+{% block main %}
+    <div id="form">
+        {{ form_start(listeForm) }}
+        <fieldset>
+            <legend>Edit idée</legend>
+            {{ form_widget(listeForm) }}
+            <input type="submit" class="btn btn-primary btn-block" name="valider" value="Valider"/>
+        </fieldset>
+        {{ form_end(listeForm) }}
+    </div>
+{% endblock %}
+
+{% block title %}
+    Ma bucket-list !
+{% endblock %}

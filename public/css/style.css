@@ -1,0 +1,40 @@
+footer {
+    text-align: center;
+    background-color: blueviolet;
+}
+
+header {
+    background-color: lightcoral;
+    display: flex;
+    justify-content: left;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-around;
+}
+
+#logo {
+    width: 5%;
+    height: auto;
+}
+
+.flash-error {
+    background-color: indianred;
+}
+
+.flash-success {
+    background-color: lawngreen;
+}
+
+.flash {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+body {
+    background-color: lightblue;
+    font-family: 'Coming Soon', cursive;
+}

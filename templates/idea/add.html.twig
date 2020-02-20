@@ -1,0 +1,22 @@
+{% extends 'layout.html.twig' %}
+
+{% block main %}
+    <div id="form">
+        {{ form_start(listeForm) }}
+        <fieldset>
+            <legend>Nouvelle idée</legend>
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                {{ form_row(listeForm.author, {'value': app.user.username}) }}
+            {% else %}
+                {{ form_row(listeForm.author) }}
+            {% endif %}
+            {{ form_rest(listeForm) }}
+            <input type="submit" class="btn btn-primary btn-block" name="valider" value="Valider"/>
+        </fieldset>
+        {{ form_end(listeForm) }}
+    </div>
+{% endblock %}
+
+{% block title %}
+    Ajouter une idée !
+{% endblock %}
