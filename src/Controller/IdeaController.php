@@ -83,7 +83,7 @@ class IdeaController extends AbstractController
         if ($formListe->isSubmitted() && $formListe->isValid()) {
             $em->persist($res);
             $em->flush();
-            $this->addFlash('success', 'The idea was successfully added to the list !');
+            $this->addFlash('success', 'The idea was successfully edited !');
             return $this->redirectToRoute('idea_detail', ['id' => $res->getId()]);
         }
         if ($this->getUser() == null || (strcmp($this->getUser()->getUsername(), $res->getAuthor()) !== 0)) {
